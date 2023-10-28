@@ -8,6 +8,11 @@
 # define TT_STRCMP strcmp
 #endif // TT_STRCMP
 
+#ifndef TT_MEMCMP
+# include <string.h>
+# define TT_MEMCMP memcmp
+#endif // TT_STRCMP
+
 #ifndef TT_PRINTF
 # include <stdio.h>
 # define TT_PRINTF printf
@@ -29,7 +34,7 @@
 #define TT_GEQ(x, y) if(x<y)return __LINE__
 #define TT_LEQ(x, y) if(x>y)return __LINE__
 #define TT_STR_EQ(x, y) if(TT_STRCMP(x, y))return __LINE__
-#define TT_ARR_EQ(x, y) if(TT_STRCMP(x, y))return __LINE__
+#define TT_ARR_EQ(x, y, size) if(TT_MEMCMP(x, y, size))return __LINE__
 #define TT_CUSTOM(x, func) if(!func(x))return __LINE__
 #define TT_TEST_END() return 0
 
