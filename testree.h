@@ -18,25 +18,37 @@
 # define TT_PRINTF printf
 #endif
 
+#ifndef TT_FLUSH
+# include <stdio.h>
+# define TT_FFLUSH fflush
+#endif // TT_FFLUSH
+
+#ifndef TT_NULL
+#define TT_NULL ((void *)0)
+#endif // TT_NULL
+
 #ifndef ARRAY_SIZE
 # define ARRAY_SIZE(x) (sizeof(x)/sizeof(x[0]))
 #endif // ARRAY_SIZE
 
 #define TT_TEST(name) int name()
-#define TT_SUITE(name, ...) TT_Test name[] {__VA_ARGS__}
+#define TT_SUITE(name, ...) TT_Test name[] = {__VA_ARGS__}
 #define TT_TEST_SUITE(x) TT_makeTests(x, ARRAY_SIZE(x), #x)
 #define TT_TEST_SUITE_NAMED(x, name) TT_makeTests(x, ARRAY_SIZE(x), name)
 
-#define TT_EQ(x, y) if(x!=y)return __LINE__
-#define TT_NEQ(x, y) if(x==y)return __LINE__
-#define TT_GR(x, y) if(x<=y)return __LINE__
-#define TT_LE(x, y) if(x>=y)return __LINE__
-#define TT_GEQ(x, y) if(x<y)return __LINE__
-#define TT_LEQ(x, y) if(x>y)return __LINE__
-#define TT_STR_EQ(x, y) if(TT_STRCMP(x, y))return __LINE__
-#define TT_ARR_EQ(x, y, size) if(TT_MEMCMP(x, y, size))return __LINE__
-#define TT_CUSTOM(x, func) if(!func(x))return __LINE__
+#define TT_EQ(x, y)           if(x!=y)                  return __LINE__
+#define TT_GR(x, y)           if(x<=y)                  return __LINE__
+#define TT_LE(x, y)           if(x>=y)                  return __LINE__
+#define TT_NEQ(x, y)          if(x==y)                  return __LINE__
+#define TT_GEQ(x, y)          if(x< y)                  return __LINE__
+#define TT_LEQ(x, y)          if(x> y)                  return __LINE__
+#define TT_PTR(x)             if(x==TT_NULL)            return __LINE__
+#define TT_STR_EQ(x, y)       if(TT_STRCMP(x, y))       return __LINE__
+#define TT_ARR_EQ(x, y, size) if(TT_MEMCMP(x, y, size)) return __LINE__
+#define TT_CUSTOM(x, func)    if(!func(x))              return __LINE__
 #define TT_TEST_END() return 0
+
+#define TT_LOG(fmt, ...) TT_PRINTF("[DEBUG] " fmt "\n", __VA_ARGS__)
 
 typedef int (*TT_Test)();
 
@@ -48,11 +60,13 @@ void TT_makeTests(TT_Test *tests, int testN, const char *name);
 
 void TT_makeTests(TT_Test *tests, int testN, const char *name) {
         TT_PRINTF("%s%s[START_OF_TEST] => {%s%s%s%s}%s\n\n", DECORATION_ITALIC(), COLOR_GREY(), FORE_RESET() DECORATION_ITALIC_OFF(), name, DECORATION_ITALIC(), COLOR_GREY(), FORE_RESET() DECORATION_ITALIC_OFF());
+        TT_FFLUSH(stdout);
         int errors = 0;
         int errorN[testN];
         for(int i = 0; i < testN; i++) {
-                TT_PRINTF("TEST[%d] => ", i + 1);
                 int status = tests[i]();
+                TT_PRINTF("TEST[%d] => ", i + 1);
+                TT_FFLUSH(stdout);
                 if(status == 0) TT_PRINTF("%sSuccess%s", FORE_RGB(50, 255, 50), FORE_RESET() DECORATION_ITALIC_OFF());
                 else {
                         TT_PRINTF("%sFailure%s\n\t\tAppened on line : %d", FORE_RGB(255, 50, 50), FORE_RESET() DECORATION_ITALIC_OFF(), status);
