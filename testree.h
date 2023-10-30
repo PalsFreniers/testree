@@ -46,6 +46,16 @@
 #define TT_STR_EQ(x, y)       if(TT_STRCMP(x, y))       return __LINE__
 #define TT_ARR_EQ(x, y, size) if(TT_MEMCMP(x, y, size)) return __LINE__
 #define TT_CUSTOM(x, func)    if(!func(x))              return __LINE__
+#define TT_CODE_EQ(x, y, code)           if(x!=y)                  return code 
+#define TT_CODE_GR(x, y, code)           if(x<=y)                  return code 
+#define TT_CODE_LE(x, y, code)           if(x>=y)                  return code 
+#define TT_CODE_NEQ(x, y, code)          if(x==y)                  return code 
+#define TT_CODE_GEQ(x, y, code)          if(x< y)                  return code 
+#define TT_CODE_LEQ(x, y, code)          if(x> y)                  return code 
+#define TT_CODE_PTR(x, code)             if(x==TT_NULL)            return code 
+#define TT_CODE_STR_EQ(x, y, code)       if(TT_STRCMP(x, y))       return code 
+#define TT_CODE_ARR_EQ(x, y, size, code) if(TT_MEMCMP(x, y, size)) return code 
+#define TT_CODE_CUSTOM(x, func, code)    if(!func(x))              return code 
 #define TT_TEST_END() return 0
 
 #define TT_LOG(fmt, ...) TT_PRINTF("[DEBUG] " fmt "\n", __VA_ARGS__)
