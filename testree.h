@@ -36,7 +36,7 @@
 #define TT_INIT() int TT_Verifyer_of_suites_and_tests = 0
 #define TT_TEST_SUITE(x) TT_Verifyer_of_suites_and_tests += TT_makeTests(x, ARRAY_SIZE(x), #x)
 #define TT_TEST_SUITE_NAMED(x, name) TT_makeTests(x, ARRAY_SIZE(x), name)
-#define TT_RETURN() {if(TT_Verifyer_of_suites_and_tests>0)TT_PRINTF("%sFailure%s on %d tests suites\n", FORE_RGB(255, 50, 50), FORE_RESET() DECORATION_ITALIC_OFF(), TT_Verifyer_of_suites_and_tests);else TT_PRINTF("%sSuccess%s on %d tests suites\n", FORE_RGB(50, 255, 50), FORE_RESET() DECORATION_ITALIC_OFF(), TT_Verifyer_of_suites_and_tests);}
+#define TT_RETURN() {if(TT_Verifyer_of_suites_and_tests>0)TT_PRINTF("%sFailure%s on %d tests suites\n", FORE_RGB(255, 50, 50), FORE_RESET() DECORATION_ITALIC_OFF(), TT_Verifyer_of_suites_and_tests);else TT_PRINTF("%sSuccess%s on all tests suites\n", FORE_RGB(50, 255, 50), FORE_RESET() DECORATION_ITALIC_OFF());}
 
 #define TT_EQ(x, y)           if(x!=y)                  return __LINE__
 #define TT_GR(x, y)           if(x<=y)                  return __LINE__
