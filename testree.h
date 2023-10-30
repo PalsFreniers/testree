@@ -33,8 +33,10 @@
 
 #define TT_TEST(name) int name()
 #define TT_SUITE(name, ...) TT_Test name[] = {__VA_ARGS__}
-#define TT_TEST_SUITE(x) TT_makeTests(x, ARRAY_SIZE(x), #x)
+#define TT_INIT() int TT_Verifyer_of_suites_and_tests = 0
+#define TT_TEST_SUITE(x) TT_Verifyer_of_suites_and_tests += TT_makeTests(x, ARRAY_SIZE(x), #x)
 #define TT_TEST_SUITE_NAMED(x, name) TT_makeTests(x, ARRAY_SIZE(x), name)
+#define TT_RETURN() {if(TT_Verifyer_of_suites_and_tests>0)TT_PRINTF("%sFailure%s on %d tests suites\n", FORE_RGB(255, 50, 50), FORE_RESET() DECORATION_ITALIC_OFF(), TT_Verifyer_of_suites_and_tests);else TT_PRINTF("%sSuccess%s on %d tests suites\n", FORE_RGB(50, 255, 50), FORE_RESET() DECORATION_ITALIC_OFF(), TT_Verifyer_of_suites_and_tests)}
 
 #define TT_EQ(x, y)           if(x!=y)                  return __LINE__
 #define TT_GR(x, y)           if(x<=y)                  return __LINE__
@@ -68,7 +70,7 @@ void TT_makeTests(TT_Test *tests, int testN, const char *name);
 
 #ifdef TESTREE_IMPLEMENTATION
 
-void TT_makeTests(TT_Test *tests, int testN, const char *name) {
+int TT_makeTests(TT_Test *tests, int testN, const char *name) {
         TT_PRINTF("%s%s[START_OF_TEST] => {%s%s%s%s}%s\n\n", DECORATION_ITALIC(), COLOR_GREY(), FORE_RESET() DECORATION_ITALIC_OFF(), name, DECORATION_ITALIC(), COLOR_GREY(), FORE_RESET() DECORATION_ITALIC_OFF());
         TT_FFLUSH(stdout);
         int errors = 0;
@@ -79,7 +81,7 @@ void TT_makeTests(TT_Test *tests, int testN, const char *name) {
                 TT_FFLUSH(stdout);
                 if(status == 0) TT_PRINTF("%sSuccess%s", FORE_RGB(50, 255, 50), FORE_RESET() DECORATION_ITALIC_OFF());
                 else {
-                        TT_PRINTF("%sFailure%s\n\t\tAppened on line : %d", FORE_RGB(255, 50, 50), FORE_RESET() DECORATION_ITALIC_OFF(), status);
+                        TT_PRINTF("%sFailure%s\n\t\tAppened with out : %d (could be a line number or a custom code)", FORE_RGB(255, 50, 50), FORE_RESET() DECORATION_ITALIC_OFF(), status);
                         errorN[errors] = i + 1;
                         errors++;
                 }
@@ -92,7 +94,8 @@ void TT_makeTests(TT_Test *tests, int testN, const char *name) {
                 TT_PRINTF("%d]\n", errorN[errors - 1]);
         }
         TT_PRINTF("\n%s%s[END_OF_TEST] => {%s%s%s%s}%s\n\n", DECORATION_ITALIC(), COLOR_GREY(),  FORE_RESET() DECORATION_ITALIC_OFF(), name, DECORATION_ITALIC(), COLOR_GREY(), FORE_RESET() DECORATION_ITALIC_OFF());
-
+		if(errors > 0) return 1;
+		return 0;
 }
 
 #endif // TESTREE_IMPLEMENTATION
